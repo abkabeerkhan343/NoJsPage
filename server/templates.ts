@@ -8,19 +8,230 @@ const baseLayout = (title: string, content: string, additionalHead: string = '')
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${title}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: 'rgb(59 130 246)',
-                        'primary-foreground': 'rgb(255 255 255)'
-                    }
-                }
-            }
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #1f2937; }
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 1rem; }
+        .grid { display: grid; gap: 2rem; }
+        .grid-cols-1 { grid-template-columns: 1fr; }
+        .grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+        @media (min-width: 640px) { .sm\\:grid-cols-2 { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 768px) { .md\\:grid-cols-2 { grid-template-columns: repeat(2, 1fr); } .md\\:flex { display: flex; } }
+        @media (min-width: 1024px) { .lg\\:grid-cols-4 { grid-template-columns: repeat(4, 1fr); } .lg\\:grid-cols-2 { grid-template-columns: repeat(2, 1fr); } }
+        
+        .bg-white { background-color: white; }
+        .bg-gray-50 { background-color: #f9fafb; }
+        .bg-gray-100 { background-color: #f3f4f6; }
+        .bg-gray-900 { background-color: #111827; }
+        .bg-primary { background-color: #3b82f6; }
+        .bg-green-600 { background-color: #059669; }
+        .bg-blue-600 { background-color: #2563eb; }
+        .bg-green-100 { background-color: #dcfce7; }
+        
+        .text-white { color: white; }
+        .text-gray-300 { color: #d1d5db; }
+        .text-gray-400 { color: #9ca3af; }
+        .text-gray-500 { color: #6b7280; }
+        .text-gray-600 { color: #4b5563; }
+        .text-gray-700 { color: #374151; }
+        .text-gray-900 { color: #111827; }
+        .text-primary { color: #3b82f6; }
+        .text-green-500 { color: #10b981; }
+        .text-green-600 { color: #059669; }
+        .text-yellow-400 { color: #fbbf24; }
+        
+        .p-4 { padding: 1rem; }
+        .p-6 { padding: 1.5rem; }
+        .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+        .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+        .px-4 { padding-left: 1rem; padding-right: 1rem; }
+        .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+        .px-8 { padding-left: 2rem; padding-right: 2rem; }
+        .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+        .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+        .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+        .py-12 { padding-top: 3rem; padding-bottom: 3rem; }
+        .py-16 { padding-top: 4rem; padding-bottom: 4rem; }
+        .py-24 { padding-top: 6rem; padding-bottom: 6rem; }
+        .pt-2 { padding-top: 0.5rem; }
+        .pt-6 { padding-top: 1.5rem; }
+        .pt-8 { padding-top: 2rem; }
+        .pb-6 { padding-bottom: 1.5rem; }
+        .pl-10 { padding-left: 2.5rem; }
+        .pr-4 { padding-right: 1rem; }
+        
+        .m-4 { margin: 1rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-3 { margin-bottom: 0.75rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .mb-8 { margin-bottom: 2rem; }
+        .mb-12 { margin-bottom: 3rem; }
+        .mt-2 { margin-top: 0.5rem; }
+        .mt-8 { margin-top: 2rem; }
+        .mt-12 { margin-top: 3rem; }
+        .mt-16 { margin-top: 4rem; }
+        .ml-2 { margin-left: 0.5rem; }
+        .mr-2 { margin-right: 0.5rem; }
+        .mx-auto { margin-left: auto; margin-right: auto; }
+        .mx-4 { margin-left: 1rem; margin-right: 1rem; }
+        
+        .w-full { width: 100%; }
+        .h-16 { height: 4rem; }
+        .h-20 { height: 5rem; }
+        .h-48 { height: 12rem; }
+        .h-96 { height: 24rem; }
+        .max-w-lg { max-width: 32rem; }
+        .max-w-md { max-width: 28rem; }
+        .max-w-4xl { max-width: 56rem; }
+        .max-w-7xl { max-width: 80rem; }
+        
+        .flex { display: flex; }
+        .flex-1 { flex: 1; }
+        .flex-shrink-0 { flex-shrink: 0; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .justify-center { justify-content: center; }
+        .space-x-2 > * + * { margin-left: 0.5rem; }
+        .space-x-4 > * + * { margin-left: 1rem; }
+        .space-x-8 > * + * { margin-left: 2rem; }
+        .space-y-2 > * + * { margin-top: 0.5rem; }
+        .space-y-4 > * + * { margin-top: 1rem; }
+        
+        .text-sm { font-size: 0.875rem; }
+        .text-lg { font-size: 1.125rem; }
+        .text-xl { font-size: 1.25rem; }
+        .text-2xl { font-size: 1.5rem; }
+        .text-3xl { font-size: 1.875rem; }
+        .text-4xl { font-size: 2.25rem; }
+        .text-6xl { font-size: 3.75rem; }
+        .font-medium { font-weight: 500; }
+        .font-semibold { font-weight: 600; }
+        .font-bold { font-weight: 700; }
+        
+        .rounded { border-radius: 0.25rem; }
+        .rounded-lg { border-radius: 0.5rem; }
+        .overflow-hidden { overflow: hidden; }
+        .shadow-sm { box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); }
+        .shadow-md { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+        .shadow-lg { box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1); }
+        
+        .border { border-width: 1px; }
+        .border-2 { border-width: 2px; }
+        .border-b { border-bottom-width: 1px; }
+        .border-t { border-top-width: 1px; }
+        .border-gray-200 { border-color: #e5e7eb; }
+        .border-gray-300 { border-color: #d1d5db; }
+        
+        .relative { position: relative; }
+        .absolute { position: absolute; }
+        .left-3 { left: 0.75rem; }
+        .right-2 { right: 0.5rem; }
+        .top-1\\/2 { top: 50%; }
+        .transform { transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y)); }
+        .-translate-y-1\\/2 { --tw-translate-y: -50%; }
+        
+        .block { display: block; }
+        .inline-block { display: inline-block; }
+        .hidden { display: none; }
+        @media (min-width: 768px) { .md\\:flex { display: flex; } }
+        
+        .object-cover { object-fit: cover; }
+        .text-center { text-align: center; }
+        .line-through { text-decoration: line-through; }
+        .opacity-90 { opacity: 0.9; }
+        
+        .transition-colors { transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out; }
+        .transition-shadow { transition: box-shadow 0.15s ease-in-out; }
+        .transition-transform { transition: transform 0.15s ease-in-out; }
+        
+        .cursor-pointer { cursor: pointer; }
+        .whitespace-nowrap { white-space: nowrap; }
+        
+        /* Buttons and Forms */
+        button, input[type="submit"] {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.15s ease-in-out;
         }
-    </script>
+        
+        button.bg-primary, input[type="submit"].bg-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+        
+        button.bg-primary:hover, input[type="submit"].bg-primary:hover {
+            background-color: #2563eb;
+        }
+        
+        input[type="text"], input[type="email"], input[type="search"], select {
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            width: 100%;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgb(59 130 246 / 0.1);
+        }
+        
+        /* Links */
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        a:hover {
+            color: #3b82f6;
+        }
+        
+        /* Hero gradient */
+        .hero-bg {
+            background: linear-gradient(135deg, #059669 0%, #2563eb 100%);
+            color: white;
+        }
+        
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            overflow: hidden;
+            transition: box-shadow 0.15s ease-in-out;
+        }
+        
+        .card:hover {
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        }
+        
+        /* Details/Summary */
+        details summary {
+            cursor: pointer;
+        }
+        
+        details[open] summary .fa-chevron-down {
+            transform: rotate(180deg);
+        }
+        
+        /* Star ratings */
+        .star-rating {
+            color: #fbbf24;
+        }
+        
+        /* Responsive */
+        @media (max-width: 767px) {
+            .hidden { display: none; }
+            .text-4xl { font-size: 2rem; }
+            .text-6xl { font-size: 3rem; }
+            .py-24 { padding-top: 4rem; padding-bottom: 4rem; }
+        }
+    </style>
     ${additionalHead}
 </head>
 <body class="bg-gray-50 text-gray-900">
@@ -186,11 +397,8 @@ const generateCategoryCard = (category: Category) => `
 
 export const generateHomePage = (featuredProducts: ProductWithCategory[], categories: Category[]) => {
     const content = `
-        <section class="bg-gradient-to-r from-green-600 to-blue-600 text-white">
-            <div 
-                class="relative bg-cover bg-center py-24 px-4" 
-                style="background-image: linear-gradient(rgba(34, 197, 94, 0.8), rgba(37, 99, 235, 0.8)), url('https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1920&h=1080')"
-            >
+        <section class="hero-bg">
+            <div class="py-24 px-4" style="background-image: linear-gradient(rgba(34, 197, 94, 0.8), rgba(37, 99, 235, 0.8)), url('https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1920&h=1080'); background-size: cover; background-position: center;"
                 <div class="max-w-4xl mx-auto text-center">
                     <h1 class="text-4xl md:text-6xl font-bold mb-6">
                         Sustainable Shopping Made Simple

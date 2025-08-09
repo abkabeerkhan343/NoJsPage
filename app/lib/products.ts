@@ -14,7 +14,9 @@ export async function getProducts(options: {
     if (options.featured) params.append('featured', 'true')
     if (options.limit) params.append('limit', options.limit.toString())
 
-    const response = await fetch(`${process.env.API_URL || 'http://localhost:5000'}/api/products?${params}`)
+    const response = await fetch(`${process.env.API_URL || 'http://localhost:5000'}/api/products?${params}`, { 
+      cache: 'no-store' 
+    })
     
     if (!response.ok) {
       throw new Error('Failed to fetch products')

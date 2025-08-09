@@ -113,6 +113,7 @@ export class MemStorage implements IStorage {
         description: "Durable and stylish eco-friendly shopping bag made from 100% organic cotton. Perfect for grocery shopping, beach trips, or everyday use.",
         shortDescription: "Durable and stylish eco-friendly shopping bag",
         price: "18.99",
+        originalPrice: null,
         categoryId: "fashion",
         imageUrl: "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
         imageUrls: [
@@ -133,6 +134,7 @@ export class MemStorage implements IStorage {
         description: "Insulated stainless steel water bottle that keeps drinks hot or cold for hours. BPA-free and perfect for outdoor activities.",
         shortDescription: "Insulated bottle keeps drinks hot or cold for hours",
         price: "32.99",
+        originalPrice: null,
         categoryId: "kitchen",
         imageUrl: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
         imageUrls: [
@@ -153,6 +155,7 @@ export class MemStorage implements IStorage {
         description: "Reusable alternative to plastic wrap made from organic cotton and natural beeswax. Perfect for wrapping sandwiches, cheese, and leftovers.",
         shortDescription: "Reusable alternative to plastic wrap - set of 3",
         price: "22.99",
+        originalPrice: null,
         categoryId: "kitchen",
         imageUrl: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
         imageUrls: [

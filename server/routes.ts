@@ -1,8 +1,105 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { generateHomePage, generateProductsPage, generateProductPage, generateCategoryPage, generateSearchPage } from "./templates";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Server-side rendered HTML routes  
+  app.get("/", async (req, res) => {
+    try {
+      const [featuredProducts, categories] = await Promise.all([
+        storage.getProducts({ featured: true, limit: 4 }),
+        storage.getCategories()
+      ])
+      
+      const html = generateHomePage(featuredProducts, categories)
+      res.send(html)
+    } catch (error) {
+      res.status(500).send("Error loading homepage")
+    }
+  })
+
+  app.get("/products", async (req, res) => {
+    try {
+      const search = req.query.q as string
+      const category = req.query.category as string
+      const products = await storage.getProducts({ search, categoryId: category })
+      
+      const html = generateProductsPage(products, search)
+      res.send(html)
+    } catch (error) {
+      res.status(500).send("Error loading products")
+    }
+  })
+
+  app.get("/products/:slug", async (req, res) => {
+    try {
+      const product = await storage.getProductBySlug(req.params.slug)
+      if (!product) {
+        return res.status(404).send("Product not found")
+      }
+      
+      const html = generateProductPage(product)
+      res.send(html)
+    } catch (error) {
+      res.status(500).send("Error loading product")
+    }
+  })
+
+  app.get("/categories/:slug", async (req, res) => {
+    try {
+      const [category, products] = await Promise.all([
+        storage.getCategoryBySlug(req.params.slug),
+        storage.getProducts({ categoryId: req.params.slug })
+      ])
+      
+      if (!category) {
+        return res.status(404).send("Category not found")
+      }
+      
+      const html = generateCategoryPage(category, products)
+      res.send(html)
+    } catch (error) {
+      res.status(500).send("Error loading category")
+    }
+  })
+
+  app.get("/search", async (req, res) => {
+    try {
+      const query = req.query.q as string
+      const products = query ? await storage.getProducts({ search: query }) : []
+      
+      const html = generateSearchPage(products, query)
+      res.send(html)
+    } catch (error) {
+      res.status(500).send("Error loading search")
+    }
+  })
+
+  // Cart operations
+  app.post("/api/cart", async (req, res) => {
+    try {
+      const { product_id, quantity } = req.body
+      // For now, just redirect back with success message
+      // In a real app, this would save to session/database
+      res.redirect(req.get('referer') || '/products')
+    } catch (error) {
+      res.status(500).send("Error adding to cart")
+    }
+  })
+
+  // Newsletter signup
+  app.post("/api/newsletter", async (req, res) => {
+    try {
+      const { email } = req.body
+      // For now, just redirect back with success message
+      // In a real app, this would save to database
+      res.redirect('/?subscribed=true')
+    } catch (error) {
+      res.status(500).send("Error subscribing to newsletter")
+    }
+  })
+
   // API routes for Next.js to use
   
   // Products

@@ -1,19 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { storage } from '../../../../server/storage'
 
-export async function GET(
-  request: NextRequest,
-  context: any // Let Next.js handle actual type internally
-) {
-  const { slug } = context.params
+// Let Next.js handle typing for `context`
+export async function GET(request: NextRequest, context: any) {
+  const { id } = context.params
 
   try {
-    const category = await storage.getCategoryBySlug(slug)
-    if (!category) {
-      return NextResponse.json({ error: 'Category not found' }, { status: 404 })
+    const product = await storage.getProductById(id)
+    if (!product) {
+      return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     }
-    return NextResponse.json(category)
+    return NextResponse.json(product)
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch category' }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to fetch product' }, { status: 500 })
   }
 }

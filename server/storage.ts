@@ -1,32 +1,37 @@
 import { type User, type InsertUser, type Category, type InsertCategory, type Product, type InsertProduct, type CartItem, type InsertCartItem, type NewsletterSubscriber, type InsertNewsletterSubscriber, type ProductWithCategory, type CartItemWithProduct } from "@shared/schema";
 import { randomUUID } from "crypto";
+import { FirestoreStorage } from './firestore-storage';
+import { isFirebaseConfigured } from './firebase';
 
 export interface IStorage {
   // Users
-  getUser(id: string): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
+  getUserById(id: string): Promise<User | null>;
+  getUserByEmail(email: string): Promise<User | null>;
   createUser(user: InsertUser): Promise<User>;
 
   // Categories
   getCategories(): Promise<Category[]>;
-  getCategoryBySlug(slug: string): Promise<Category | undefined>;
+  getCategoryById(id: string): Promise<Category | null>;
+  getCategoryBySlug(slug: string): Promise<Category | null>;
   createCategory(category: InsertCategory): Promise<Category>;
 
   // Products
   getProducts(options?: { categoryId?: string; search?: string; featured?: boolean; limit?: number }): Promise<ProductWithCategory[]>;
-  getProduct(id: string): Promise<ProductWithCategory | undefined>;
-  getProductBySlug(slug: string): Promise<ProductWithCategory | undefined>;
-  createProduct(product: InsertProduct): Promise<Product>;
+  getProductById(id: string): Promise<ProductWithCategory | null>;
+  getProductBySlug(slug: string): Promise<ProductWithCategory | null>;
+  createProduct(product: InsertProduct): Promise<ProductWithCategory>;
+  updateProduct(id: string, product: Partial<InsertProduct>): Promise<ProductWithCategory | null>;
+  deleteProduct(id: string): Promise<boolean>;
 
   // Cart
-  getCartItems(sessionId: string): Promise<CartItemWithProduct[]>;
+  getCartItems(sessionId: string): Promise<CartItem[]>;
   addToCart(item: InsertCartItem): Promise<CartItem>;
-  updateCartItem(id: string, quantity: number): Promise<CartItem | undefined>;
-  removeFromCart(id: string): Promise<void>;
-  clearCart(sessionId: string): Promise<void>;
+  updateCartItem(id: string, quantity: number): Promise<CartItem | null>;
+  removeFromCart(id: string): Promise<boolean>;
+  clearCart(sessionId: string): Promise<boolean>;
 
   // Newsletter
-  subscribeToNewsletter(subscriber: InsertNewsletterSubscriber): Promise<NewsletterSubscriber>;
+  subscribeNewsletter(subscriber: InsertNewsletterSubscriber): Promise<NewsletterSubscriber>;
 }
 
 export class MemStorage implements IStorage {
@@ -175,12 +180,12 @@ export class MemStorage implements IStorage {
   }
 
   // Users
-  async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
+  async getUserById(id: string): Promise<User | null> {
+    return this.users.get(id) || null;
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(user => user.username === username);
+  async getUserByEmail(email: string): Promise<User | null> {
+    return Array.from(this.users.values()).find(user => user.email === email) || null;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
@@ -199,8 +204,12 @@ export class MemStorage implements IStorage {
     return Array.from(this.categories.values());
   }
 
-  async getCategoryBySlug(slug: string): Promise<Category | undefined> {
-    return Array.from(this.categories.values()).find(category => category.slug === slug);
+  async getCategoryById(id: string): Promise<Category | null> {
+    return this.categories.get(id) || null;
+  }
+
+  async getCategoryBySlug(slug: string): Promise<Category | null> {
+    return Array.from(this.categories.values()).find(category => category.slug === slug) || null;
   }
 
   async createCategory(insertCategory: InsertCategory): Promise<Category> {
@@ -310,28 +319,26 @@ export class MemStorage implements IStorage {
     return item;
   }
 
-  async updateCartItem(id: string, quantity: number): Promise<CartItem | undefined> {
+  async updateCartItem(id: string, quantity: number): Promise<CartItem | null> {
     const item = this.cartItems.get(id);
-    if (!item) return undefined;
+    if (!item) return null;
 
     item.quantity = quantity;
     return item;
   }
 
-  async removeFromCart(id: string): Promise<void> {
-    this.cartItems.delete(id);
+  async removeFromCart(id: string): Promise<boolean> {
+    return this.cartItems.delete(id);
   }
 
-  async clearCart(sessionId: string): Promise<void> {
-    Array.from(this.cartItems.entries()).forEach(([id, item]) => {
-      if (item.sessionId === sessionId) {
-        this.cartItems.delete(id);
-      }
-    });
+  async clearCart(sessionId: string): Promise<boolean> {
+    const itemsToDelete = Array.from(this.cartItems.entries()).filter(([_, item]) => item.sessionId === sessionId);
+    itemsToDelete.forEach(([id]) => this.cartItems.delete(id));
+    return true;
   }
 
   // Newsletter
-  async subscribeToNewsletter(insertSubscriber: InsertNewsletterSubscriber): Promise<NewsletterSubscriber> {
+  async subscribeNewsletter(insertSubscriber: InsertNewsletterSubscriber): Promise<NewsletterSubscriber> {
     const id = randomUUID();
     const subscriber: NewsletterSubscriber = {
       ...insertSubscriber,
@@ -343,4 +350,21 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Create storage instance based on Firebase availability
+const createStorage = async (): Promise<IStorage> => {
+  try {
+    if (isFirebaseConfigured()) {
+      console.log('Initializing Firebase storage...')
+      const firestoreStorage = new FirestoreStorage()
+      await firestoreStorage.initializeData()
+      return firestoreStorage
+    }
+  } catch (error) {
+    console.log('Firebase initialization failed, using memory storage:', error)
+  }
+  
+  console.log('Using in-memory storage...')
+  return new MemStorage()
+}
+
+export const storage = await createStorage();

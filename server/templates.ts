@@ -796,3 +796,419 @@ export const generateSearchPage = (products: ProductWithCategory[], query?: stri
     
     return baseLayout(title, content, additionalHead)
 }
+
+export const generateAccountPage = (queryParams?: URLSearchParams) => {
+    const success = queryParams?.get('success');
+    const error = queryParams?.get('error');
+    
+    let statusMessage = '';
+    if (success === 'account_created') {
+        statusMessage = `
+            <div class="mb-8 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
+                <div class="flex">
+                    <i class="fas fa-check-circle mr-2 mt-1"></i>
+                    <div>
+                        <h3 class="font-semibold">Account Created Successfully!</h3>
+                        <p>Welcome to EcoMart! You can now sign in to your account.</p>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else if (success === 'signed_in') {
+        statusMessage = `
+            <div class="mb-8 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
+                <div class="flex">
+                    <i class="fas fa-check-circle mr-2 mt-1"></i>
+                    <div>
+                        <h3 class="font-semibold">Welcome Back!</h3>
+                        <p>You have successfully signed in to your account.</p>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else if (error === 'user_exists') {
+        statusMessage = `
+            <div class="mb-8 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+                <div class="flex">
+                    <i class="fas fa-exclamation-circle mr-2 mt-1"></i>
+                    <div>
+                        <h3 class="font-semibold">Account Already Exists</h3>
+                        <p>An account with this email address already exists. Please sign in instead.</p>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else if (error === 'invalid_credentials') {
+        statusMessage = `
+            <div class="mb-8 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+                <div class="flex">
+                    <i class="fas fa-exclamation-circle mr-2 mt-1"></i>
+                    <div>
+                        <h3 class="font-semibold">Invalid Credentials</h3>
+                        <p>The email or password you entered is incorrect. Please try again.</p>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else if (error === 'signup_failed' || error === 'signin_failed') {
+        statusMessage = `
+            <div class="mb-8 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+                <div class="flex">
+                    <i class="fas fa-exclamation-circle mr-2 mt-1"></i>
+                    <div>
+                        <h3 class="font-semibold">Authentication Error</h3>
+                        <p>There was an error processing your request. Please try again.</p>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    const content = `
+        <div class="py-16 px-4">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-12">
+                    <h1 class="text-3xl font-bold text-gray-900 mb-4">My Account</h1>
+                    <p class="text-gray-600 text-lg">Manage your account and orders</p>
+                </div>
+
+                ${statusMessage}
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="card p-6">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Sign In</h2>
+                        <form action="/api/auth/signin" method="POST" class="space-y-4">
+                            <div>
+                                <label for="email" class="block text-gray-700 font-medium mb-2">Email</label>
+                                <input 
+                                    type="email" 
+                                    id="email" 
+                                    name="email" 
+                                    required 
+                                    style="padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; width: 100%;"
+                                />
+                            </div>
+                            <div>
+                                <label for="password" class="block text-gray-700 font-medium mb-2">Password</label>
+                                <input 
+                                    type="password" 
+                                    id="password" 
+                                    name="password" 
+                                    required 
+                                    style="padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; width: 100%;"
+                                />
+                            </div>
+                            <button type="submit" class="w-full bg-primary text-white py-3 rounded-lg font-medium">
+                                Sign In
+                            </button>
+                        </form>
+                        
+                        <div class="mt-4 pt-4 border-t border-gray-200">
+                            <p class="text-sm text-gray-600 text-center">
+                                <a href="/forgot-password" class="text-primary hover:underline">Forgot your password?</a>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card p-6">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Create Account</h2>
+                        <form action="/api/auth/signup" method="POST" class="space-y-4">
+                            <div>
+                                <label for="signup_name" class="block text-gray-700 font-medium mb-2">Full Name</label>
+                                <input 
+                                    type="text" 
+                                    id="signup_name" 
+                                    name="name" 
+                                    required 
+                                    style="padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; width: 100%;"
+                                />
+                            </div>
+                            <div>
+                                <label for="signup_email" class="block text-gray-700 font-medium mb-2">Email</label>
+                                <input 
+                                    type="email" 
+                                    id="signup_email" 
+                                    name="email" 
+                                    required 
+                                    style="padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; width: 100%;"
+                                />
+                            </div>
+                            <div>
+                                <label for="signup_password" class="block text-gray-700 font-medium mb-2">Password</label>
+                                <input 
+                                    type="password" 
+                                    id="signup_password" 
+                                    name="password" 
+                                    required 
+                                    minlength="6"
+                                    style="padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; width: 100%;"
+                                />
+                                <p class="text-xs text-gray-500 mt-1">Password must be at least 6 characters long</p>
+                            </div>
+                            <div>
+                                <label class="flex items-center">
+                                    <input type="checkbox" required class="mr-2">
+                                    <span class="text-sm text-gray-700">
+                                        I agree to the <a href="/terms" class="text-primary hover:underline">Terms of Service</a> 
+                                        and <a href="/privacy" class="text-primary hover:underline">Privacy Policy</a>
+                                    </span>
+                                </label>
+                            </div>
+                            <button type="submit" class="w-full bg-primary text-white py-3 rounded-lg font-medium">
+                                Create Account
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="mt-12 text-center">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Why Create an Account?</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                            <div class="text-center">
+                                <i class="fas fa-shipping-fast text-primary text-2xl mb-2"></i>
+                                <h4 class="font-medium text-gray-900 mb-1">Faster Checkout</h4>
+                                <p class="text-sm text-gray-600">Save your shipping info for quicker orders</p>
+                            </div>
+                            <div class="text-center">
+                                <i class="fas fa-history text-primary text-2xl mb-2"></i>
+                                <h4 class="font-medium text-gray-900 mb-1">Order History</h4>
+                                <p class="text-sm text-gray-600">Track your purchases and reorder easily</p>
+                            </div>
+                            <div class="text-center">
+                                <i class="fas fa-heart text-primary text-2xl mb-2"></i>
+                                <h4 class="font-medium text-gray-900 mb-1">Wishlist</h4>
+                                <p class="text-sm text-gray-600">Save items for later and get notified of sales</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `
+    
+    return baseLayout('My Account - EcoMart', content)
+}
+
+export const generateCartPage = (cartItems: any[]) => {
+    const content = `
+        <div class="py-16 px-4">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-12">
+                    <h1 class="text-3xl font-bold text-gray-900 mb-4">Shopping Cart</h1>
+                    <p class="text-gray-600 text-lg">Review your items before checkout</p>
+                </div>
+
+                ${cartItems.length === 0 ? `
+                    <div class="text-center py-12">
+                        <i class="fas fa-shopping-cart text-6xl text-gray-300 mb-4"></i>
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Your cart is empty</h2>
+                        <p class="text-gray-600 mb-8">Add some eco-friendly products to get started!</p>
+                        <a 
+                            href="/products" 
+                            class="inline-block bg-primary text-white font-semibold py-3 px-8 rounded-lg"
+                        >
+                            Shop Products
+                        </a>
+                    </div>
+                ` : `
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Cart Items</h2>
+                        <!-- Cart items would be listed here -->
+                        <div class="border-t border-gray-200 pt-6 mt-6">
+                            <div class="flex justify-between items-center text-lg font-semibold">
+                                <span>Total: $0.00</span>
+                                <button class="bg-primary text-white py-3 px-8 rounded-lg">
+                                    Proceed to Checkout
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `}
+            </div>
+        </div>
+    `
+    
+    return baseLayout('Shopping Cart - EcoMart', content)
+}
+
+export const generateAboutPage = () => {
+    const content = `
+        <div class="py-16 px-4">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-12">
+                    <h1 class="text-3xl font-bold text-gray-900 mb-4">About EcoMart</h1>
+                    <p class="text-gray-600 text-lg">Your trusted partner for sustainable living</p>
+                </div>
+
+                <div class="space-y-8">
+                    <div class="bg-white rounded-lg shadow-md p-8">
+                        <h2 class="text-2xl font-semibold text-gray-900 mb-4">Our Mission</h2>
+                        <p class="text-gray-700 leading-relaxed">
+                            At EcoMart, we believe that sustainable living should be accessible to everyone. 
+                            Our mission is to provide high-quality, eco-friendly products that help reduce 
+                            environmental impact while meeting your daily needs.
+                        </p>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-md p-8">
+                        <h2 class="text-2xl font-semibold text-gray-900 mb-4">Why Choose EcoMart?</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <div class="flex items-center mb-3">
+                                    <i class="fas fa-leaf text-green-500 text-xl mr-3"></i>
+                                    <h3 class="font-semibold">Sustainable Products</h3>
+                                </div>
+                                <p class="text-gray-600">All products are carefully selected for their environmental benefits.</p>
+                            </div>
+                            <div>
+                                <div class="flex items-center mb-3">
+                                    <i class="fas fa-shield-alt text-green-500 text-xl mr-3"></i>
+                                    <h3 class="font-semibold">Quality Guaranteed</h3>
+                                </div>
+                                <p class="text-gray-600">We ensure every product meets our high standards for quality and durability.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-md p-8">
+                        <h2 class="text-2xl font-semibold text-gray-900 mb-4">Our Impact</h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+                            <div>
+                                <div class="text-3xl font-bold text-primary mb-2">50K+</div>
+                                <div class="text-gray-600">Happy Customers</div>
+                            </div>
+                            <div>
+                                <div class="text-3xl font-bold text-primary mb-2">1M+</div>
+                                <div class="text-gray-600">Plastic Items Avoided</div>
+                            </div>
+                            <div>
+                                <div class="text-3xl font-bold text-primary mb-2">500+</div>
+                                <div class="text-gray-600">Eco Products</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `
+    
+    return baseLayout('About Us - EcoMart', content)
+}
+
+export const generateContactPage = () => {
+    const content = `
+        <div class="py-16 px-4">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-12">
+                    <h1 class="text-3xl font-bold text-gray-900 mb-4">Contact Us</h1>
+                    <p class="text-gray-600 text-lg">We'd love to hear from you</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-white rounded-lg shadow-md p-8">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-6">Send us a Message</h2>
+                        <form action="/api/contact" method="POST" class="space-y-4">
+                            <div>
+                                <label for="contact_name" class="block text-gray-700 font-medium mb-2">Name</label>
+                                <input 
+                                    type="text" 
+                                    id="contact_name" 
+                                    name="name" 
+                                    required 
+                                    style="padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; width: 100%;"
+                                />
+                            </div>
+                            <div>
+                                <label for="contact_email" class="block text-gray-700 font-medium mb-2">Email</label>
+                                <input 
+                                    type="email" 
+                                    id="contact_email" 
+                                    name="email" 
+                                    required 
+                                    style="padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; width: 100%;"
+                                />
+                            </div>
+                            <div>
+                                <label for="subject" class="block text-gray-700 font-medium mb-2">Subject</label>
+                                <input 
+                                    type="text" 
+                                    id="subject" 
+                                    name="subject" 
+                                    required 
+                                    style="padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; width: 100%;"
+                                />
+                            </div>
+                            <div>
+                                <label for="message" class="block text-gray-700 font-medium mb-2">Message</label>
+                                <textarea 
+                                    id="message" 
+                                    name="message" 
+                                    rows="4" 
+                                    required 
+                                    style="padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; width: 100%; resize: vertical;"
+                                ></textarea>
+                            </div>
+                            <button type="submit" class="w-full bg-primary text-white py-3 rounded-lg font-medium">
+                                Send Message
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="space-y-8">
+                        <div class="bg-white rounded-lg shadow-md p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Get in Touch</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center">
+                                    <i class="fas fa-envelope text-primary mr-4"></i>
+                                    <div>
+                                        <div class="font-medium">Email</div>
+                                        <div class="text-gray-600">support@ecomart.com</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-phone text-primary mr-4"></i>
+                                    <div>
+                                        <div class="font-medium">Phone</div>
+                                        <div class="text-gray-600">1-800-ECO-MART</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-clock text-primary mr-4"></i>
+                                    <div>
+                                        <div class="font-medium">Hours</div>
+                                        <div class="text-gray-600">Mon-Fri: 9AM-6PM EST</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-lg shadow-md p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">FAQ</h3>
+                            <div class="space-y-3">
+                                <details class="group">
+                                    <summary class="cursor-pointer font-medium text-gray-900">
+                                        What is your return policy?
+                                    </summary>
+                                    <p class="mt-2 text-gray-600">
+                                        We offer a 30-day return policy for all unused items in original packaging.
+                                    </p>
+                                </details>
+                                <details class="group">
+                                    <summary class="cursor-pointer font-medium text-gray-900">
+                                        Do you offer international shipping?
+                                    </summary>
+                                    <p class="mt-2 text-gray-600">
+                                        Currently, we ship within the US and Canada. International shipping coming soon!
+                                    </p>
+                                </details>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `
+    
+    return baseLayout('Contact Us - EcoMart', content)
+}

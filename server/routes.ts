@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { generateHomePage, generateProductsPage, generateProductPage, generateCategoryPage, generateSearchPage } from "./templates";
+import { generateHomePage, generateProductsPage, generateProductPage, generateCategoryPage, generateSearchPage, generateAccountPage, generateCartPage, generateAboutPage, generateContactPage } from "./templates";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Server-side rendered HTML routes  
@@ -76,6 +76,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   })
 
+  app.get("/account", async (req, res) => {
+    try {
+      const queryParams = new URLSearchParams(req.url?.split('?')[1] || '')
+      const html = generateAccountPage(queryParams)
+      res.send(html)
+    } catch (error) {
+      res.status(500).send("Error loading account page")
+    }
+  })
+
+  app.get("/cart", async (req, res) => {
+    try {
+      // In a real app, this would get cart items from session
+      const html = generateCartPage([])
+      res.send(html)
+    } catch (error) {
+      res.status(500).send("Error loading cart")
+    }
+  })
+
+  app.get("/about", async (req, res) => {
+    try {
+      const html = generateAboutPage()
+      res.send(html)
+    } catch (error) {
+      res.status(500).send("Error loading about page")
+    }
+  })
+
+  app.get("/contact", async (req, res) => {
+    try {
+      const html = generateContactPage()
+      res.send(html)
+    } catch (error) {
+      res.status(500).send("Error loading contact page")
+    }
+  })
+
   // Cart operations
   app.post("/api/cart", async (req, res) => {
     try {
@@ -92,11 +130,68 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/newsletter", async (req, res) => {
     try {
       const { email } = req.body
-      // For now, just redirect back with success message
-      // In a real app, this would save to database
+      await storage.subscribeNewsletter({ email })
       res.redirect('/?subscribed=true')
     } catch (error) {
       res.status(500).send("Error subscribing to newsletter")
+    }
+  })
+
+  // Authentication routes
+  app.post("/api/auth/signup", async (req, res) => {
+    try {
+      const { name, email, password } = req.body
+      
+      if (!name || !email || !password) {
+        return res.status(400).send("All fields are required")
+      }
+      
+      // Check if user already exists
+      const existingUser = await storage.getUserByEmail(email)
+      if (existingUser) {
+        return res.redirect('/account?error=user_exists')
+      }
+      
+      // Create user (password hashing would be handled by Firebase Auth)
+      await storage.createUser({ name, email })
+      
+      res.redirect('/account?success=account_created')
+    } catch (error) {
+      console.error('Signup error:', error)
+      res.redirect('/account?error=signup_failed')
+    }
+  })
+
+  app.post("/api/auth/signin", async (req, res) => {
+    try {
+      const { email, password } = req.body
+      
+      if (!email || !password) {
+        return res.status(400).send("Email and password are required")
+      }
+      
+      // In a real implementation, this would verify credentials with Firebase Auth
+      const user = await storage.getUserByEmail(email)
+      if (!user) {
+        return res.redirect('/account?error=invalid_credentials')
+      }
+      
+      // Set session or JWT token here
+      res.redirect('/account?success=signed_in')
+    } catch (error) {
+      console.error('Signin error:', error)
+      res.redirect('/account?error=signin_failed')
+    }
+  })
+
+  app.post("/api/contact", async (req, res) => {
+    try {
+      const { name, email, subject, message } = req.body
+      // In a real app, this would send an email or save to database
+      console.log('Contact form submission:', { name, email, subject, message })
+      res.redirect('/contact?success=message_sent')
+    } catch (error) {
+      res.status(500).send("Error sending message")
     }
   })
 

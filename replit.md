@@ -1,6 +1,6 @@
 # Overview
 
-EcoMart is a full-stack e-commerce web application focused on sustainable and eco-friendly products. The application features a modern Next.js frontend with server-side rendering (SSR) and static generation, backed by an Express.js API server and PostgreSQL database. The system supports product browsing, category filtering, shopping cart functionality, and newsletter subscriptions.
+EcoMart is a full-stack e-commerce web application focused on sustainable and eco-friendly products that works completely without JavaScript enabled. The application features an Express.js server with server-side rendering (SSR) using EJS templates and inline CSS, backed by Firebase integration including Firestore database, Firebase Authentication, and Cloud Functions. The system supports product browsing, category filtering, shopping cart functionality, user authentication, and newsletter subscriptions with complete accessibility when JavaScript is disabled.
 
 # User Preferences
 
@@ -10,13 +10,13 @@ Preferred communication style: Simple, everyday language.
 
 ## Frontend Architecture
 
-The frontend is built with Next.js using the App Router pattern for modern React development. The application leverages server-side rendering (SSR) for product pages to improve SEO and performance. Key architectural decisions include:
+The frontend is built with server-side rendering (SSR) using Express.js and EJS templates. The application works completely without JavaScript enabled for maximum accessibility. Key architectural decisions include:
 
-- **Next.js App Router**: Provides file-based routing and built-in SSR capabilities for better SEO optimization
-- **Static Generation**: Homepage and category pages are statically generated for faster loading
-- **Server Components**: Product listings and details are rendered on the server to reduce client-side JavaScript
-- **Tailwind CSS + shadcn/ui**: Provides a consistent design system with pre-built, accessible components
-- **Form Handling**: Uses server actions for form submissions (cart operations, newsletter signup)
+- **Express.js with EJS Templates**: Server-side rendering with template functions that generate complete HTML pages
+- **Inline CSS**: All styling is embedded directly in HTML to ensure proper rendering without external CSS files
+- **Progressive Enhancement**: Full functionality without JavaScript, with optional JavaScript enhancements
+- **Form-Based Interactions**: All user interactions use HTML forms with POST/GET requests to server endpoints
+- **Session-Based State**: Shopping cart and user state managed via Express sessions and cookies
 
 ## Backend Architecture
 
@@ -30,27 +30,30 @@ The backend follows a clean separation of concerns with Express.js handling HTTP
 
 ## Data Storage Solutions
 
-The application uses PostgreSQL as the primary database with Drizzle ORM for type-safe database operations:
+The application uses Firebase Firestore as the primary database with a hybrid storage approach:
 
-- **Database Schema**: Well-defined tables for users, categories, products, cart items, and newsletter subscribers
-- **Drizzle Kit**: Handles database migrations and schema synchronization
-- **Connection Pooling**: Neon serverless database for scalable connections
-- **Data Validation**: Zod schemas ensure type safety from database to frontend
+- **Firebase Firestore**: NoSQL document database for production data storage with real-time capabilities
+- **Firestore Storage Interface**: Custom storage abstraction that implements the IStorage interface
+- **Hybrid Fallback**: Falls back to in-memory storage when Firebase credentials are not available
+- **Authentication Integration**: Firebase Authentication for email/password user management
+- **Cloud Functions**: Server-side processing for order handling, inventory updates, and analytics
 
 ## Development Architecture
 
-The project uses a hybrid development setup with both Vite (for client-side development) and Next.js:
+The project uses Express.js with TypeScript for server-side development:
 
-- **Vite Development**: Fast client-side development with HMR for component development
-- **Next.js Production**: Server-side rendering and optimization for production builds
-- **TypeScript**: Full type safety across client, server, and shared code
-- **Path Aliases**: Clean imports with @ prefix for client code and @shared for common types
+- **Express.js Server**: Handles all HTTP requests, form submissions, and page rendering
+- **TypeScript**: Full type safety across server and shared code with proper interface definitions
+- **Template Functions**: Server-side HTML generation with embedded CSS for JavaScript-free operation
+- **Session Management**: Express sessions with memory store for cart and user state persistence
 
 # External Dependencies
 
-## Database Services
-- **Neon Database**: Serverless PostgreSQL hosting with connection pooling
-- **Drizzle ORM**: Type-safe database operations and migrations
+## Firebase Services
+- **Firebase Firestore**: NoSQL document database for scalable data storage with real-time capabilities
+- **Firebase Authentication**: Email/password authentication with secure user management
+- **Firebase Cloud Functions**: Serverless backend processing for orders, inventory, and analytics
+- **Firebase Admin SDK**: Server-side Firebase integration for secure operations
 
 ## UI/Component Libraries
 - **shadcn/ui**: Comprehensive React component library built on Radix UI primitives

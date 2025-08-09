@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { storage } from '../../../../server/storage'
 
+interface CategoryParams {
+  slug: string
+}
+
 export async function GET(
   request: NextRequest,
-  context: { params: { [key: string]: string } }
+  { params }: { params: CategoryParams }
 ) {
-  const { slug } = context.params
+  const { slug } = params
 
   try {
     const category = await storage.getCategoryBySlug(slug)

@@ -3,12 +3,12 @@ import { storage } from '../../../../server/storage'
 
 export async function GET(
   request: NextRequest,
-  context: { params: { slug: string } }
+  context: { params: { [key: string]: string } }
 ) {
-  const { params } = context
+  const { slug } = context.params
 
   try {
-    const category = await storage.getCategoryBySlug(params.slug)
+    const category = await storage.getCategoryBySlug(slug)
     if (!category) {
       return NextResponse.json({ error: 'Category not found' }, { status: 404 })
     }

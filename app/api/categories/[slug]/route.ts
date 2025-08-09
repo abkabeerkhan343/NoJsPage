@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { storage } from '../../../../server/storage'
 
-export async function GET(request: NextRequest, { params }: { params: { slug: string } }) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { slug: string } }
+) {
   try {
     const category = await storage.getCategoryBySlug(params.slug)
     if (!category) {

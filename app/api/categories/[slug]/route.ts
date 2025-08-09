@@ -3,8 +3,10 @@ import { storage } from '../../../../server/storage'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  context: { params: { slug: string } }
 ) {
+  const { params } = context
+
   try {
     const category = await storage.getCategoryBySlug(params.slug)
     if (!category) {

@@ -132,6 +132,40 @@ const baseLayout = (title: string, content: string, additionalHead: string = '')
         .transform { transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y)); }
         .-translate-y-1\\/2 { --tw-translate-y: -50%; }
         
+        /* Search bar specific styles */
+        .search-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            z-index: 1;
+        }
+        
+        .search-button {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #3b82f6;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border: none;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+        }
+        
+        .search-button:hover {
+            background-color: #2563eb;
+        }
+        
         .block { display: block; }
         .inline-block { display: inline-block; }
         .hidden { display: none; }
@@ -173,6 +207,11 @@ const baseLayout = (title: string, content: string, additionalHead: string = '')
             border: 1px solid #d1d5db;
             border-radius: 0.5rem;
             width: 100%;
+        }
+        
+        input[type="search"] {
+            padding-left: 2.5rem;
+            padding-right: 5rem;
         }
         
         input:focus, select:focus {
@@ -254,15 +293,16 @@ const baseLayout = (title: string, content: string, additionalHead: string = '')
                 </nav>
                 
                 <div class="flex-1 max-w-lg mx-4">
-                    <form method="GET" action="/search" class="relative">
+                    <form method="GET" action="/search" class="search-container">
                         <input 
                             type="search" 
                             name="q" 
                             placeholder="Search products..." 
-                            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                            class="w-full"
+                            style="padding: 0.75rem; padding-left: 2.5rem; padding-right: 5rem; border: 1px solid #d1d5db; border-radius: 0.5rem;"
                         />
-                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                        <button type="submit" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-primary text-white px-3 py-1 rounded text-sm hover:bg-blue-700">
+                        <i class="fas fa-search search-icon"></i>
+                        <button type="submit" class="search-button">
                             Search
                         </button>
                     </form>

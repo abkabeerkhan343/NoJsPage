@@ -1,0 +1,132 @@
+None selected 
+
+Skip to content
+Using Gmail with screen readers
+30 of 7,145
+Abdul Kabeer - Next.js full-stack Interview.
+Inbox
+
+Mostafa Aboshady
+Aug 8, 2025, 11:59 AM (1 day ago)
+resend On Wed, Aug 6, 2025 at 6:30 PM Mostafa Aboshady <maboshady@libascollective.com> wrote: Hello Abdel Kabeer, Hope you are doing well. We are glad to tell y
+
+Ab. Kabeerkhan <abkabeerkhan343@gmail.com>
+Aug 8, 2025, 12:10 PM (1 day ago)
+to Mostafa
+
+
+ ecommerce.zip
+
+On Fri, Aug 8, 2025 at 11:59 AM Mostafa Aboshady <maboshady@libascollective.com> wrote:
+resend 
+
+On Wed, Aug 6, 2025 at 6:30 PM Mostafa Aboshady <maboshady@libascollective.com> wrote:
+Hello Abdel Kabeer, 
+
+Hope you are doing well. We are glad to tell you that you passed the screening phase, and the next phase will be the technical assessment. And it will be run from the office. So we will be waiting for you tomorrow, Thursday, at 10:30 AM. 
+
+Please find the task details below: 
+
+Full-Stack + Flutter Developer Assessment Task
+
+Objective
+Develop a mini e-commerce experience that includes:
+
+A Next.js web storefront with SEO-optimized product pages
+
+A Flutter mobile app for browsing and favoriting products
+
+Integration with Firebase for data storage and user authentication
+
+Deliverables
+1. Web Storefront (Next.js with SEO)
+Create a simple web app using the Next.js App Router that includes:
+
+Homepage featuring static-generated products
+
+Product listing page rendered with server-side rendering (SSR)
+
+Product detail page with:
+
+SEO-friendly metadata (title, description, Open Graph tags)
+
+Structured data using JSON-LD for rich snippets
+
+Lazy-loaded images
+
+Search bar with client-side filtering
+
+Basic cart UI (no checkout functionality required)
+
+Bonus points for:
+
+Implementing dynamic routing for product pages
+
+Adding a sitemap and robots.txt
+
+Using Bootstrap or styled-components for styling
+
+2. Mobile App (Flutter)
+Build a Flutter application with:
+
+Product listing screen pulling data from Firebase
+
+Product detail screen
+
+User authentication using Firebase (email/password login)
+
+Favorite products functionality (stored in Firestore per user)
+
+Responsive layout for both phones and tablets
+
+Bonus points for:
+
+Using Provider for state management
+
+Adding smooth transitions or animations between screens
+
+3. Firebase Integration
+Use Firebase for:
+
+Firestore: Store product data and user favorites
+
+Authentication: Email/password sign-in
+
+Hosting: Deploy the Next.js web app (e.g., via Vercel)
+
+Cloud Functions: Include at least one server-side Firebase function
+
+Evaluation Criteria
+Skill Area	What We’re Looking For
+Next.js	Use of SSR/SSG, dynamic routing, SEO best practices, and clean code
+Flutter	UI/UX quality, state management, Firebase usage, and app responsiveness
+Firebase	Effective data modeling, secure authentication, and optimized queries
+SEO	Proper metadata, structured data, and performance-focused implementation
+Code Quality	Modular structure, naming consistency, maintainability, and documentation
+Product Thinking	UX sensibility, responsiveness, and user-centric design decisions
+
+
+Submission Guidelines
+Please submit:
+
+A GitHub repository with a clear and concise README
+
+Screenshots or a screen recording demonstrating both the web and mobile apps in action
+
+A brief write-up outlining your architecture decisions, technologies used, and any trade-offs considered
+
+Office location : https://maps.app.goo.gl/vit6wqyE7Ljqquec7 
+
+--
+Best regards,  
+
+Mostafa Aboshady
+E-commerce Director | Libas Collective  
+
+📧 Maboshady@libascollective.com  
+🌐 www.libascollective.com  
+📱 +971-54-492-6184  
+📍 2104 Prime Tower, Dubai  
+ One attachment
+  •  Scanned by Gmail
+1 deleted message in this conversation. View message or delete forever.

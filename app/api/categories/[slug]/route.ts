@@ -1,17 +1,19 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse, RouteHandlerContext } from 'next/server'
 import { storage } from '../../../../server/storage'
 
-// Let Next.js handle typing for `context`
-export async function GET(request: NextRequest, context: any) {
-  const { id } = context.params
+export async function GET(
+  request: NextRequest,
+  context: RouteHandlerContext<{ slug: string }>
+) {
+  const { params } = context
 
   try {
-    const product = await storage.getProductById(id)
-    if (!product) {
-      return NextResponse.json({ error: 'Product not found' }, { status: 404 })
+    const category = await storage.getCategoryBySlug(params.slug)
+    if (!category) {
+      return NextResponse.json({ error: 'Category not found' }, { status: 404 })
     }
-    return NextResponse.json(product)
+    return NextResponse.json(category)
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch product' }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to fetch category' }, { status: 500 })
   }
 }

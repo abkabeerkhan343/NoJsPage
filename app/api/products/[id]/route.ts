@@ -1,14 +1,23 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { storage } from '../../../../server/storage'
+import { NextRequest, NextResponse } from 'next/server';
+import { getProduct } from '../../../lib/products';
+import { RouteParams } from '../../../../shared/schema';
+ // yahi se import
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(
+  request: NextRequest,
+  { params }: RouteParams<'id'>
+) {
+  const { id } = params;
+
   try {
-    const product = await storage.getProduct(params.id)
+    const product = await getProduct(id);
+
     if (!product) {
-      return NextResponse.json({ error: 'Product not found' }, { status: 404 })
+      return NextResponse.json({ error: 'Product not found' }, { status: 404 });
     }
-    return NextResponse.json(product)
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch product' }, { status: 500 })
+
+    return NextResponse.json(product);
+  } catch {
+    return NextResponse.json({ error: 'Failed to fetch product' }, { status: 500 });
   }
 }

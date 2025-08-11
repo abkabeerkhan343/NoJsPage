@@ -4,12 +4,13 @@ import { ProductCard } from '../../components/ProductCard'
 import { getCategoryBySlug, getProducts } from '../../lib/products'
 
 interface CategoryPageProps {
-  params: { category: string }
+  params: Promise<{ category: string }>
 }
 
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
-  const category = await getCategoryBySlug(params.category)
-  
+  const resolvedParams = await params
+  const category = await getCategoryBySlug(resolvedParams.category)
+
   if (!category) {
     return {
       title: 'Category Not Found - EcoMart',
@@ -23,9 +24,11 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
 }
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
+  const resolvedParams = await params
+
   const [category, products] = await Promise.all([
-    getCategoryBySlug(params.category),
-    getProducts({ categoryId: params.category })
+    getCategoryBySlug(resolvedParams.category),
+    getProducts({ categoryId: resolvedParams.category }),
   ])
 
   if (!category) {

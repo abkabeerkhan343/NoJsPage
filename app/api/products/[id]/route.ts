@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { storage } from '../../../../server/storage'; // Fix this import path!
+import { storage } from '../../../../server/storage';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }  // <-- correct shape here
 ) {
-  const { id } = params;
+  const { id } = context.params;
 
   try {
     const product = await storage.getProductById(id);

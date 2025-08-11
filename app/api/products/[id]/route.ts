@@ -1,12 +1,8 @@
+// app/api/products/[id]/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { getProduct } from '../../../lib/products';
-import { RouteParams } from '../../../../shared/schema';
- // yahi se import
+import { getProduct } from '../../../lib/products'; // adjust path
 
-export async function GET(
-  request: NextRequest,
-  { params }: RouteParams<'id'>
-) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   const { id } = params;
 
   try {

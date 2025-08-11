@@ -1,9 +1,11 @@
-// app/api/products/[id]/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { getProduct } from '../../../lib/products'; // adjust path
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function GET(
+  request: NextRequest,
+  context: { params: { id: string } }
+) {
+  const { id } = context.params;
 
   try {
     const product = await getProduct(id);
